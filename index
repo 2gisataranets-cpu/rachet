@@ -1,0 +1,738 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Редактирование бронирования</title>
+<link href="https://cdn.jsdelivr.net/npm/fontsource-inter@5.0.0/400.css" rel="stylesheet">
+<link href="https://cdn.jsdelivr.net/npm/fontsource-inter@5.0.0/500.css" rel="stylesheet">
+<link href="https://cdn.jsdelivr.net/npm/fontsource-inter@5.0.0/600.css" rel="stylesheet">
+<link href="https://cdn.jsdelivr.net/npm/fontsource-inter@5.0.0/700.css" rel="stylesheet">
+<style>
+* { margin: 0; padding: 0; box-sizing: border-box; }
+body {
+  font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+  background: #f5f0e1;
+  color: #2d3a27;
+  min-height: 100vh;
+  display: flex;
+  justify-content: center;
+  padding: 20px;
+  background-image: 
+    radial-gradient(circle at 20% 50%, rgba(45,90,39,0.03) 0%, transparent 50%),
+    radial-gradient(circle at 80% 50%, rgba(45,90,39,0.03) 0%, transparent 50%);
+}
+
+.selection-page { max-width: 1100px; width: 100%; }
+.selection-header { text-align: center; margin-bottom: 40px; padding-top: 20px; }
+.selection-header h1 { font-size: 28px; font-weight: 700; color: #2d5a27; margin-bottom: 8px; letter-spacing: -0.02em; }
+.selection-header p { font-size: 15px; color: #6b7d5a; }
+.situations-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 20px; }
+.situation-card {
+  background: #faf6ea; border: 1px solid #c8d4a8; border-radius: 4px; padding: 24px;
+  cursor: pointer; transition: all 0.25s ease; position: relative; overflow: hidden;
+}
+.situation-card::before {
+  content: ''; position: absolute; top: 0; left: 0; right: 0; height: 3px;
+  background: linear-gradient(90deg, #2d5a27, #4a8a3f, #2d5a27); opacity: 0; transition: opacity 0.25s ease;
+}
+.situation-card:hover { border-color: #4a8a3f; box-shadow: 0 4px 16px rgba(45,58,39,0.1); transform: translateY(-2px); }
+.situation-card:hover::before { opacity: 1; }
+.situation-card.completed { border-color: #4a8a3f; background: #e8f0d8; }
+.situation-card.completed::before { opacity: 1; background: #4a8a3f; }
+.situation-number { font-size: 11px; font-weight: 700; color: #4a8a3f; text-transform: uppercase; letter-spacing: 0.08em; margin-bottom: 10px; }
+.situation-title { font-size: 16px; font-weight: 600; color: #2d5a27; margin-bottom: 10px; }
+.situation-desc { font-size: 12px; color: #6b7d5a; margin-bottom: 12px; }
+.situation-meta { display: flex; flex-direction: column; gap: 5px; }
+.situation-meta-item { display: flex; justify-content: space-between; align-items: center; font-size: 13px; color: #6b7d5a; }
+.situation-meta-item .label { font-weight: 500; }
+.situation-meta-item .value { font-weight: 600; color: #2d5a27; }
+.situation-meta-item .value.discount { color: #4a8a3f; }
+.situation-meta-item .value.old { text-decoration: line-through; color: #8a8a6a; }
+.situation-tags { display: flex; flex-wrap: wrap; gap: 6px; margin-top: 14px; }
+.situation-tag {
+  font-size: 10px; font-weight: 600; padding: 3px 8px; background: #f0ebd8;
+  color: #4a8a3f; border-radius: 2px; border: 1px solid #d4deb8;
+}
+.situation-tag.promo { color: #a85b2a; background: #f5ebe0; border-color: #d4a888; }
+.situation-tag.bonus { color: #6b7d5a; background: #e8f0d8; border-color: #b8c8a8; }
+.situation-status {
+  margin-top: 14px; padding-top: 12px; border-top: 1px solid #d4deb8;
+  display: flex; align-items: center; gap: 8px; font-size: 12px; font-weight: 600;
+}
+.situation-status.pending { color: #8a8a6a; }
+.situation-status.done { color: #4a8a3f; }
+.situation-status svg { width: 14px; height: 14px; }
+
+.booking-page { display: none; max-width: 1000px; width: 100%; }
+.booking-page.active { display: block; }
+.selection-page.hidden { display: none; }
+
+.container {
+  background: #faf6ea; border-radius: 4px;
+  box-shadow: 0 2px 8px rgba(45,58,39,0.08), 0 8px 32px rgba(45,58,39,0.06);
+  overflow: hidden; border: 1px solid #c8d4a8; animation: slideUp 0.5s ease-out; position: relative;
+}
+.container::before {
+  content: ''; position: absolute; top: 0; left: 0; right: 0; height: 4px;
+  background: linear-gradient(90deg, #2d5a27, #4a8a3f, #2d5a27);
+}
+@keyframes slideUp { from { opacity: 0; transform: translateY(20px); } to { opacity: 1; transform: translateY(0); } }
+
+.header { padding: 0; position: relative; background: #f0ebd8; border-bottom: 2px solid #c8d4a8; }
+.header-top { height: 40px; background: #f5f0e1; display: flex; align-items: center; justify-content: center; border-bottom: 1px solid #d4deb8; }
+.header-content { padding: 16px 32px; display: flex; align-items: center; gap: 16px; }
+.back-btn {
+  width: 36px; height: 36px; background: #2d5a27; border-radius: 2px;
+  display: flex; align-items: center; justify-content: center; cursor: pointer;
+  border: 1px solid #1a3d15; transition: all 0.2s ease; flex-shrink: 0;
+}
+.back-btn:hover { background: #1a3d15; }
+.back-btn svg { width: 18px; height: 18px; fill: #faf6ea; }
+.header-info { flex: 1; }
+.header h1 { font-size: 18px; font-weight: 600; color: #2d5a27; }
+.header h2 { font-size: 13px; font-weight: 500; color: #6b7d5a; margin-top: 2px; }
+.header-ornament { display: flex; align-items: center; gap: 12px; padding: 0 32px 10px; }
+.header-ornament .line { flex: 1; height: 1px; background: #c8d4a8; }
+.header-ornament .diamond { width: 6px; height: 6px; background: #4a8a3f; transform: rotate(45deg); }
+
+.content { padding: 24px 32px; display: grid; grid-template-columns: 1fr 1fr; gap: 24px; }
+.section { margin-bottom: 4px; }
+.section-title {
+  font-size: 15px; font-weight: 600; color: #2d5a27; margin-bottom: 12px;
+  display: flex; align-items: center; gap: 8px; padding-bottom: 8px; border-bottom: 1px solid #d4deb8;
+}
+.section-title svg { width: 16px; height: 16px; fill: #4a8a3f; }
+.field-group { margin-bottom: 12px; }
+.field-label { display: block; font-size: 11px; font-weight: 600; color: #6b7d5a; margin-bottom: 5px; text-transform: uppercase; letter-spacing: 0.06em; }
+.field-label .required { color: #a85b2a; }
+.input-wrapper { position: relative; display: flex; align-items: center; }
+.input-wrapper input, .input-wrapper select, .input-wrapper textarea {
+  width: 100%; padding: 9px 12px; font-size: 13px; font-family: 'Inter', sans-serif;
+  border: 1px solid #c8d4a8; border-radius: 2px; background: #fdfbf3; color: #2d3a27;
+  transition: all 0.2s ease; outline: none;
+}
+.input-wrapper input:focus, .input-wrapper select:focus {
+  border-color: #4a8a3f; box-shadow: 0 0 0 2px rgba(74,138,63,0.12); background: #fff;
+}
+.input-wrapper textarea { resize: vertical; min-height: 70px; border-radius: 2px; }
+.input-wrapper .calendar-icon { position: absolute; right: 10px; pointer-events: none; color: #6b7d5a; }
+.input-wrapper .calendar-icon svg { width: 16px; height: 16px; }
+
+.discount-badge {
+  display: flex; align-items: center; gap: 10px; padding: 10px 14px;
+  background: #f0ebd8; border: 1px solid #c8d4a8; border-radius: 2px;
+  margin-bottom: 10px; border-left: 3px solid #4a8a3f;
+}
+.discount-check {
+  width: 18px; height: 18px; background: #4a8a3f; border-radius: 1px;
+  display: flex; align-items: center; justify-content: center; flex-shrink: 0;
+}
+.discount-check svg { width: 11px; height: 11px; fill: #faf6ea; }
+.discount-badge-text { font-size: 12px; color: #2d5a27; font-weight: 500; line-height: 1.5; }
+.discount-badge-text .orig-price { text-decoration: line-through; color: #8a8a6a; }
+.discount-badge-text .disc-price { color: #4a8a3f; font-weight: 700; }
+
+.discount-list {
+  list-style: none; padding: 0; margin: 0 0 12px 0;
+  background: #f5f0e1; border: 1px solid #d4deb8; border-radius: 2px; overflow: hidden;
+}
+.discount-list li {
+  padding: 8px 12px; font-size: 12px; color: #4a5a3a;
+  display: flex; align-items: center; gap: 8px; border-bottom: 1px solid #e0e8c8;
+}
+.discount-list li:last-child { border-bottom: none; }
+.discount-list li::before { content: '◆'; font-size: 5px; color: #4a8a3f; flex-shrink: 0; }
+.discount-list li .disc-name { color: #2d5a27; font-weight: 500; }
+.discount-list li .disc-value { color: #a85b2a; font-weight: 700; margin-left: auto; font-size: 13px; }
+
+.price-display { padding: 4px 0; }
+.price-row { display: flex; justify-content: space-between; align-items: center; padding: 8px 0; }
+.price-row + .price-row { border-top: 1px solid #d4deb8; }
+.price-label { font-size: 12px; color: #6b7d5a; font-weight: 500; }
+.price-value { font-size: 20px; font-weight: 700; color: #2d5a27; letter-spacing: -0.02em; }
+.divider { height: 1px; background: #c8d4a8; margin: 8px 0; position: relative; }
+.divider::after {
+  content: '◆'; position: absolute; left: 50%; top: 50%; transform: translate(-50%, -50%);
+  color: #c8d4a8; font-size: 7px; background: #faf6ea; padding: 0 8px;
+}
+
+.adjustment-banner {
+  margin-top: 4px; padding: 12px 14px;
+  background: #f0ebd8; border: 1px solid #c8d4a8; border-radius: 2px; border-left: 3px solid #a85b2a;
+}
+.adjustment-banner .banner-title {
+  font-size: 10px; font-weight: 700; color: #a85b2a; text-transform: uppercase;
+  letter-spacing: 0.08em; margin-bottom: 6px; display: flex; align-items: center; gap: 5px;
+}
+.adjustment-banner .banner-title svg { width: 12px; height: 12px; fill: #a85b2a; }
+.adjustment-banner .banner-info { font-size: 13px; color: #2d5a27; line-height: 1.5; }
+.adjustment-banner .banner-info .old-val { text-decoration: line-through; color: #8a8a6a; }
+.adjustment-banner .banner-info .new-val { color: #a85b2a; font-weight: 700; font-size: 18px; }
+.adjustment-banner .banner-reason { font-size: 12px; color: #6b7d5a; margin-top: 4px; font-style: italic; }
+
+.refund-section { margin-top: 12px; padding: 14px; background: #f5f0e1; border-radius: 2px; border: 2px solid #d4deb8; transition: all 0.3s ease; }
+.refund-section.correct { border-color: #4a8a3f; background: #e8f0d8; }
+.refund-section.incorrect { border-color: #a85b2a; background: #f5ebe0; }
+.refund-section .refund-label {
+  font-size: 13px; font-weight: 600; color: #2d5a27; margin-bottom: 10px;
+  display: flex; align-items: center; gap: 6px;
+}
+.refund-section .refund-label svg { width: 14px; height: 14px; fill: #4a8a3f; }
+.refund-input-row { display: flex; align-items: center; gap: 8px; }
+.refund-input-row input {
+  flex: 1; padding: 10px 12px; font-size: 16px; font-weight: 700;
+  font-family: 'Inter', sans-serif; border: 1px solid #c8d4a8; border-radius: 2px;
+  outline: none; transition: all 0.2s ease; background: #fdfbf3; color: #2d5a27;
+}
+.refund-input-row input:focus { border-color: #4a8a3f; box-shadow: 0 0 0 2px rgba(74,138,63,0.12); }
+.refund-input-row .currency { font-size: 15px; font-weight: 700; color: #6b7d5a; flex-shrink: 0; }
+.refund-fields { display: flex; flex-direction: column; gap: 10px; }
+.refund-field { display: flex; align-items: center; gap: 8px; }
+.refund-field .field-type { font-size: 11px; font-weight: 600; color: #6b7d5a; min-width: 80px; text-transform: uppercase; letter-spacing: 0.04em; }
+.refund-field input { flex: 1; padding: 9px 10px; font-size: 15px; font-weight: 700; font-family: 'Inter', sans-serif; border: 1px solid #c8d4a8; border-radius: 2px; outline: none; transition: all 0.2s ease; background: #fdfbf3; color: #2d5a27; }
+.refund-field input:focus { border-color: #4a8a3f; box-shadow: 0 0 0 2px rgba(74,138,63,0.12); }
+.refund-message { margin-top: 8px; font-size: 12px; font-weight: 500; display: none; align-items: center; gap: 5px; }
+.refund-message.show { display: flex; }
+.refund-message.success { color: #4a8a3f; }
+.refund-message.error { color: #a85b2a; }
+.refund-message svg { width: 14px; height: 14px; flex-shrink: 0; }
+.attempts-counter { font-size: 10px; color: #8a8a6a; margin-top: 5px; font-weight: 500; }
+
+.btn {
+  padding: 9px 18px; font-size: 12px; font-weight: 600; font-family: 'Inter', sans-serif;
+  border: none; border-radius: 2px; cursor: pointer; transition: all 0.2s ease;
+  letter-spacing: 0.02em; text-transform: uppercase; white-space: nowrap;
+}
+.btn:active { transform: scale(0.97); }
+.btn-primary { background: #2d5a27; color: #faf6ea; }
+.btn-primary:hover { background: #1a3d15; }
+.btn-primary:disabled { background: #a8b888; cursor: not-allowed; }
+.btn-secondary { background: #e0e8c8; color: #2d5a27; border: 1px solid #c8d4a8; }
+.btn-secondary:hover { background: #d4deb8; }
+.btn-outline { background: transparent; color: #4a8a3f; border: 1px solid #4a8a3f; }
+.btn-outline:hover { background: #e8f0d8; }
+.btn-sm { padding: 7px 12px; font-size: 10px; }
+.btn-check-refund { background: #a85b2a; color: #faf6ea; }
+.btn-check-refund:hover { background: #8a4518; }
+
+.children-section { margin-top: 8px; }
+.child-entry { display: flex; align-items: center; gap: 8px; margin-bottom: 6px; animation: fadeIn 0.3s ease-out; }
+@keyframes fadeIn { from { opacity: 0; transform: translateY(-6px); } to { opacity: 1; transform: translateY(0); } }
+.child-entry input, .child-entry select {
+  padding: 7px 8px; font-size: 12px; font-family: 'Inter', sans-serif;
+  border: 1px solid #c8d4a8; border-radius: 2px; outline: none; transition: all 0.2s ease; background: #fdfbf3; color: #2d3a27;
+}
+.child-entry input:focus, .child-entry select:focus { border-color: #4a8a3f; box-shadow: 0 0 0 2px rgba(74,138,63,0.12); }
+.child-entry input[type="number"] { width: 60px; }
+.child-entry select { min-width: 100px; }
+.btn-remove-child {
+  width: 24px; height: 24px; border-radius: 1px; border: 1px solid #d4a888;
+  background: #f5ebe0; color: #a85b2a; cursor: pointer;
+  display: flex; align-items: center; justify-content: center; transition: all 0.2s ease; flex-shrink: 0;
+}
+.btn-remove-child:hover { background: #e8d4c0; }
+.btn-remove-child svg { width: 12px; height: 12px; }
+
+.status-section { margin-top: 4px; }
+.status-current { padding: 10px 12px; background: #f0ebd8; border: 1px solid #d4deb8; border-radius: 2px; margin-bottom: 12px; }
+.status-current .label { font-size: 10px; color: #6b7d5a; font-weight: 600; text-transform: uppercase; letter-spacing: 0.06em; }
+.status-current .value { font-size: 14px; font-weight: 600; color: #2d5a27; margin-top: 3px; }
+.status-current .value.undefined { color: #8a8a6a; }
+
+.footer { padding: 14px 32px; border-top: 1px solid #d4deb8; display: flex; justify-content: flex-end; gap: 8px; background: #f0ebd8; }
+
+.toast {
+  position: fixed; bottom: 24px; right: 24px; padding: 12px 20px; border-radius: 2px;
+  font-size: 13px; font-weight: 500; color: #faf6ea; transform: translateY(100px);
+  opacity: 0; transition: all 0.3s ease; z-index: 1000; box-shadow: 0 4px 16px rgba(45,58,39,0.2);
+}
+.toast.show { transform: translateY(0); opacity: 1; }
+.toast.success { background: #2d5a27; }
+.toast.error { background: #a85b2a; }
+.toast.info { background: #4a8a3f; }
+
+@media (max-width: 768px) {
+  .content { grid-template-columns: 1fr; padding: 16px; gap: 20px; }
+  .header-content { padding: 14px 16px; }
+  .footer { padding: 12px 16px; }
+  .situations-grid { grid-template-columns: 1fr; }
+  .refund-fields { gap: 8px; }
+  .refund-field { flex-direction: column; align-items: stretch; }
+  .refund-field .field-type { min-width: auto; }
+}
+</style>
+</head>
+<body>
+
+<div class="selection-page" id="selectionPage">
+  <div class="selection-header">
+    <h1>Редактирование бронирования</h1>
+    <p>Выберите ситуацию для тренировки расчёта возврата</p>
+  </div>
+  <div class="situations-grid" id="situationsGrid"></div>
+</div>
+
+<div class="booking-page" id="bookingPage">
+  <div class="container">
+    <div class="header">
+      <div class="header-top"></div>
+      <div class="header-content">
+        <div class="back-btn" onclick="goBack()">
+          <svg viewBox="0 0 24 24"><path d="M20 11H7.83l5.59-5.59L12 4l-8 8 8 8 1.41-1.41L7.83 13H20v-2z"/></svg>
+        </div>
+        <div class="header-info">
+          <h1 id="pageTitle">Редактирование бронирования</h1>
+          <h2 id="pageSubtitle">Ситуация 1</h2>
+        </div>
+      </div>
+      <div class="header-ornament">
+        <div class="line"></div><div class="diamond"></div><div class="line"></div>
+      </div>
+    </div>
+    <div class="content">
+      <div class="left-column">
+        <div class="section">
+          <div class="section-title">
+            <svg viewBox="0 0 24 24"><path d="M19 4h-1V2h-2v2H8V2H6v2H5c-1.11 0-2 .9-2 2v14c0 1.1.89 2 2 2h14c1.1 0 2-.9 2-2V6c0-1.1-.9-2-2-2zm0 16H5V10h14v10zm0-12H5V6h14v2zm-7 5h5v5h-5v-5z"/></svg>
+            Даты бронирования
+          </div>
+          <div class="field-group">
+            <label class="field-label">Дата заезда</label>
+            <div class="input-wrapper">
+              <input type="date" id="checkinDate" value="2026-05-22">
+              <span class="calendar-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg></span>
+            </div>
+          </div>
+          <div class="field-group">
+            <label class="field-label">Дата выезда</label>
+            <div class="input-wrapper">
+              <input type="date" id="checkoutDate" value="2026-05-23">
+              <span class="calendar-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg></span>
+            </div>
+          </div>
+        </div>
+        <div class="section">
+          <div class="section-title">
+            <svg viewBox="0 0 24 24"><path d="M7 13c1.66 0 3-1.34 3-3S8.66 7 7 7s-3 1.34-3 3 1.34 3 3 3zm12-6h-8v7H3V5H1v15h2v-3h18v3h2v-9c0-2.21-1.79-4-4-4z"/></svg>
+            Категория номера
+          </div>
+          <div class="field-group">
+            <label class="field-label">Категория <span class="required">*</span></label>
+            <div class="input-wrapper"><select id="roomCategory"><option>Стандарт</option><option>Супериор</option><option>Люкс</option></select></div>
+          </div>
+        </div>
+        <div class="section">
+          <div class="section-title">
+            <svg viewBox="0 0 24 24"><path d="M16 11c1.66 0 2.99-1.34 2.99-3S17.66 5 16 5c-1.66 0-3 1.34-3 3s1.34 3 3 3zm-8 0c1.66 0 2.99-1.34 2.99-3S9.66 5 8 5C6.34 5 5 6.34 5 8s1.34 3 3 3zm0 2c-2.33 0-7 1.17-7 3.5V19h14v-2.5c0-2.33-4.67-3.5-7-3.5zm8 0c-.29 0-.62.02-.97.05 1.16.84 1.97 1.97 1.97 3.45V19h6v-2.5c0-2.33-4.67-3.5-7-3.5z"/></svg>
+            Гости
+          </div>
+          <div class="field-group">
+            <label class="field-label">Взрослых</label>
+            <div class="input-wrapper"><input type="number" id="adults" value="1" min="1" max="10"></div>
+          </div>
+          <button class="btn btn-outline btn-sm" onclick="addChild()">+ Добавить ребёнка</button>
+          <div class="children-section" id="childrenContainer"></div>
+          <div id="childrenLabel" style="display:none;font-size:12px;color:#6b7d5a;margin-top:8px;font-weight:500;">Дети: <span id="childrenCount">—</span></div>
+        </div>
+        <div class="section">
+          <div class="field-group"><div class="input-wrapper"><textarea id="comment" placeholder="Комментарий" rows="2"></textarea></div></div>
+        </div>
+        <div class="section">
+          <div class="section-title">
+            <svg viewBox="0 0 24 24"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-2 15l-5-5 1.41-1.41L10 14.17l7.59-7.59L19 8l-9 9z"/></svg>
+            Статус
+          </div>
+          <div class="status-section">
+            <div class="status-current"><div class="label">Текущий статус</div><div class="value undefined">не определён</div></div>
+            <div class="field-group">
+              <label class="field-label">Новый статус</label>
+              <div class="input-wrapper"><select id="newStatus"><option value="">Не определён</option><option>Подтверждён</option><option>Заселён</option><option>Выселён</option><option>Отменён</option></select></div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="right-column">
+        <div class="section">
+          <div class="section-title">
+            <svg viewBox="0 0 24 24"><path d="M11.8 10.9c-2.27-.59-3-1.2-3-2.15 0-1.09 1.01-1.85 2.7-1.85 1.78 0 2.44.85 2.5 2.1h2.21c-.07-1.72-1.12-3.3-3.21-3.81V3h-3v2.16c-1.94.42-3.5 1.68-3.5 3.61 0 2.31 1.91 3.46 4.7 4.13 2.5.6 3 1.48 3 2.41 0 .69-.49 1.79-2.7 1.79-2.06 0-2.87-.92-2.98-2.1h-2.2c.12 2.19 1.76 3.42 3.68 3.83V21h3v-2.15c1.95-.37 3.5-1.5 3.5-3.55 0-2.84-2.43-3.81-4.7-4.4z"/></svg>
+            Цена
+          </div>
+          <div class="discount-badge" id="discountBadge"></div>
+          <ul class="discount-list" id="discountList"></ul>
+          <div class="price-display" id="priceDisplay"></div>
+          <div class="divider"></div>
+          <div class="adjustment-banner" id="adjustmentBanner"></div>
+          <div class="refund-section" id="refundSection">
+            <div class="refund-label">
+              <svg viewBox="0 0 24 24"><path d="M21 18v1c0 1.1-.9 2-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2v1h-2V5H5v14h14v-2h2z" fill="#4a8a3f"/></svg>
+              <span id="refundLabel">Рассчитайте сумму возврата:</span>
+            </div>
+            <div id="refundFields"></div>
+            <div class="refund-message" id="refundMessage">
+              <svg id="refundMsgIcon" viewBox="0 0 24 24"></svg>
+              <span id="refundMsgText"></span>
+            </div>
+            <div class="attempts-counter" id="attemptsCounter"></div>
+            <button class="btn btn-check-refund" id="checkRefundBtn" onclick="checkRefund()" disabled style="margin-top:10px;width:100%;">Проверить</button>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="footer">
+      <button class="btn btn-secondary" onclick="goBack()">Назад</button>
+      <button class="btn btn-primary" id="saveBtn" onclick="onSave()" disabled>Сохранить</button>
+    </div>
+  </div>
+</div>
+
+<div class="toast" id="toast"></div>
+
+<script>
+let childIdCounter = 0;
+let attemptCount = 0;
+let refundCorrect = false;
+let currentSituation = null;
+let completedSituations = new Set();
+
+const situations = [
+  {
+    id: 1,
+    title: 'Базовая корректировка',
+    description: 'Корректировка стоимости с двумя типами скидок',
+    originalPrice: 13647.05,
+    discountedPrice: 10440,
+    discounts: [
+      { name: 'Эксклюзивный тариф (15%)', value: '-2 047,05' },
+      { name: 'Промокод SVOILYDI (10%)', value: '-1 160' }
+    ],
+    promoTags: ['SVOILYDI', 'Экс. тариф'],
+    newSum: 9350,
+    correctRefund: { rubles: 3287.24 },
+    reason: 'Корректировка стоимости проживания'
+  },
+  {
+    id: 2,
+    title: 'Отмена завтраков',
+    description: 'Убирают завтраки из бронирования',
+    originalPrice: 5600,
+    discountedPrice: 4031,
+    discounts: [
+      { name: 'Промокод RYNDYCH (20%. Max: 2000)', value: '-1 120' },
+      { name: 'Бонусами СберСпасибо', value: '-449' }
+    ],
+    promoTags: ['RYNDYCH', 'СберСпасибо'],
+    newSum: 4800,
+    correctRefund: { rubles: 576, bonus: 64 },
+    reason: 'Убрана услуга — завтраки'
+  },
+  {
+    id: 3,
+    title: 'Сокращение дат',
+    description: 'Сокращение сроков проживания',
+    originalPrice: 20012,
+    discountedPrice: 15012,
+    discounts: [
+      { name: 'Промокод BARHATVANDROUKI (30%. Max: 5000)', value: '-5 000' }
+    ],
+    promoTags: ['BARHATVANDROUKI'],
+    newSum: 11371,
+    correctRefund: { rubles: 7052.30 },
+    reason: 'Сокращение дат проживания'
+  },
+  {
+    id: 4,
+    title: 'Перенос дат',
+    description: 'Перенос дат проживания',
+    originalPrice: 4450,
+    discountedPrice: 3560,
+    discounts: [
+      { name: 'Промокод AUT2923 (20%. Max: 2500)', value: '-890' }
+    ],
+    promoTags: ['AUT2923'],
+    newSum: 4000,
+    correctRefund: { rubles: 360 },
+    reason: 'Перенос дат проживания'
+  },
+  {
+    id: 5,
+    title: 'Сокращение проживания',
+    description: 'Сокращение срока + возврат бонусов',
+    originalPrice: 6630,
+    discountedPrice: 1524,
+    discounts: [
+      { name: 'Промокод GOLD2898 (20%. Max: 3000)', value: '-1 326' },
+      { name: 'Бонусами СберСпасибо', value: '-3 780' }
+    ],
+    promoTags: ['GOLD2898', 'СберСпасибо'],
+    newSum: 3315,
+    correctRefund: { rubles: 762, bonus: 1890 },
+    reason: 'Сокращение проживания'
+  }
+];
+
+function formatPrice(value) {
+  if (value % 1 !== 0) {
+    return value.toLocaleString('ru-RU', { minimumFractionDigits: 2, maximumFractionDigits: 2 }) + ' ₽';
+  }
+  return value.toLocaleString('ru-RU') + ' ₽';
+}
+
+function showToast(message, type = 'info') {
+  const toast = document.getElementById('toast');
+  toast.textContent = message;
+  toast.className = 'toast ' + type;
+  requestAnimationFrame(() => toast.classList.add('show'));
+  setTimeout(() => toast.classList.remove('show'), 3000);
+}
+
+function renderSelectionPage() {
+  const grid = document.getElementById('situationsGrid');
+  grid.innerHTML = situations.map(s => `
+    <div class="situation-card ${completedSituations.has(s.id) ? 'completed' : ''}" onclick="openSituation(${s.id})">
+      <div class="situation-number">Ситуация ${s.id}</div>
+      <div class="situation-title">${s.title}</div>
+      <div class="situation-desc">${s.description}</div>
+      <div class="situation-meta">
+        <div class="situation-meta-item"><span class="label">Изначальная цена</span><span class="value old">${formatPrice(s.originalPrice)}</span></div>
+        <div class="situation-meta-item"><span class="label">Со скидкой</span><span class="value discount">${formatPrice(s.discountedPrice)}</span></div>
+        <div class="situation-meta-item"><span class="label">Новая сумма</span><span class="value">${formatPrice(s.newSum)}</span></div>
+      </div>
+      <div class="situation-tags">
+        ${s.discounts.map((d, i) => {
+          const isBonus = d.name.includes('СберСпасибо');
+          return `<span class="situation-tag ${isBonus ? 'bonus' : (i === 0 ? 'promo' : '')}">${s.promoTags[i] || ''}</span>`;
+        }).join('')}
+      </div>
+      <div class="situation-status ${completedSituations.has(s.id) ? 'done' : 'pending'}">
+        ${completedSituations.has(s.id)
+          ? '<svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-2 15l-5-5 1.41-1.41L10 14.17l7.59-7.59L19 8l-9 9z"/></svg> Выполнено'
+          : '<svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 2C6.47 2 2 6.47 2 12s4.47 10 10 10 10-4.47 10-10S17.53 2 12 2zm1 15h-2v-2h2v2zm0-4h-2V7h2v6z"/></svg> Ожидает решения'
+        }
+      </div>
+    </div>
+  `).join('');
+}
+
+function openSituation(id) {
+  currentSituation = situations.find(s => s.id === id);
+  if (!currentSituation) return;
+
+  document.getElementById('selectionPage').classList.add('hidden');
+  document.getElementById('bookingPage').classList.add('active');
+
+  document.getElementById('pageTitle').textContent = 'Редактирование бронирования';
+  document.getElementById('pageSubtitle').textContent = 'Ситуация ' + id + ': ' + currentSituation.title;
+
+  attemptCount = 0;
+  refundCorrect = false;
+  childIdCounter = 0;
+  document.getElementById('childrenContainer').innerHTML = '';
+  document.getElementById('childrenLabel').style.display = 'none';
+  document.getElementById('saveBtn').disabled = true;
+  document.getElementById('saveBtn').textContent = 'Сохранить';
+  document.getElementById('refundSection').classList.remove('correct', 'incorrect');
+  document.getElementById('refundMessage').classList.remove('show');
+  document.getElementById('attemptsCounter').textContent = '';
+
+  const hasBonus = currentSituation.correctRefund.bonus !== undefined;
+  const hasRubles = currentSituation.correctRefund.rubles !== undefined;
+
+  // Render fields
+  let fieldsHtml = '<div class="refund-fields">';
+  if (hasRubles && hasBonus) {
+    document.getElementById('refundLabel').textContent = 'Рассчитайте сумму возврата:';
+    fieldsHtml += `
+      <div class="refund-field">
+        <span class="field-type">Рублями</span>
+        <input type="text" id="refundRubles" placeholder="Сумма в рублях" oninput="onRefundInput()">
+        <span class="currency">₽</span>
+      </div>
+      <div class="refund-field">
+        <span class="field-type">Бонусами</span>
+        <input type="text" id="refundBonus" placeholder="Сумма в бонусах" oninput="onRefundInput()">
+        <span class="currency">бон.</span>
+      </div>
+    `;
+  } else if (hasRubles) {
+    document.getElementById('refundLabel').textContent = 'Рассчитайте сумму возврата в рублях:';
+    fieldsHtml += `
+      <div class="refund-field">
+        <span class="field-type">Рублями</span>
+        <input type="text" id="refundRubles" placeholder="Сумма в рублях" oninput="onRefundInput()">
+        <span class="currency">₽</span>
+      </div>
+    `;
+  } else if (hasBonus) {
+    document.getElementById('refundLabel').textContent = 'Рассчитайте сумму возврата в бонусах:';
+    fieldsHtml += `
+      <div class="refund-field">
+        <span class="field-type">Бонусами</span>
+        <input type="text" id="refundBonus" placeholder="Сумма в бонусах" oninput="onRefundInput()">
+        <span class="currency">бон.</span>
+      </div>
+    `;
+  }
+  fieldsHtml += '</div>';
+  document.getElementById('refundFields').innerHTML = fieldsHtml;
+  document.getElementById('checkRefundBtn').disabled = true;
+
+  // Render discount badge
+  document.getElementById('discountBadge').innerHTML = `
+    <div class="discount-check"><svg viewBox="0 0 24 24"><path d="M9 16.17L4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41L9 16.17z"/></svg></div>
+    <div class="discount-badge-text">
+      К заказу была применена скидка. Изначальная цена: <span class="orig-price">${formatPrice(currentSituation.originalPrice)}</span>, со скидкой: <span class="disc-price">${formatPrice(currentSituation.discountedPrice)}</span>
+    </div>
+  `;
+
+  document.getElementById('discountList').innerHTML = currentSituation.discounts.map(d => `
+    <li><span class="disc-name">${d.name}</span><span class="disc-value">${d.value} ₽</span></li>
+  `).join('');
+
+  document.getElementById('priceDisplay').innerHTML = `
+    <div class="price-row"><span class="price-label">Сумма без скидки</span><span class="price-value">${formatPrice(currentSituation.originalPrice)}</span></div>
+    <div class="price-row"><span class="price-label">Итого со скидками</span><span class="price-value">${formatPrice(currentSituation.discountedPrice)}</span></div>
+    <div class="price-row"><span class="price-label">Оплачено</span><span class="price-value">${formatPrice(currentSituation.discountedPrice)}</span></div>
+  `;
+
+  document.getElementById('adjustmentBanner').innerHTML = `
+    <div class="banner-title">
+      <svg viewBox="0 0 24 24"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm1 15h-2v-2h2v2zm0-4h-2V7h2v6z"/></svg>
+      ${currentSituation.reason}
+    </div>
+    <div class="banner-info">
+      Новая сумма: <span class="old-val">${formatPrice(currentSituation.discountedPrice)}</span> → <span class="new-val">${formatPrice(currentSituation.newSum)}</span>
+    </div>
+  `;
+}
+
+function goBack() {
+  document.getElementById('bookingPage').classList.remove('active');
+  document.getElementById('selectionPage').classList.remove('hidden');
+  renderSelectionPage();
+}
+
+function addChild() {
+  childIdCounter++;
+  const id = childIdCounter;
+  const container = document.getElementById('childrenContainer');
+  const entry = document.createElement('div');
+  entry.className = 'child-entry';
+  entry.id = 'child-' + id;
+  entry.innerHTML = `
+    <input type="text" placeholder="Имя" style="flex:1;">
+    <input type="number" placeholder="Возраст" min="0" max="17" style="width:60px;">
+    <select style="min-width:100px;"><option value="">Пол</option><option value="m">Мальчик</option><option value="f">Девочка</option></select>
+    <button class="btn-remove-child" onclick="removeChild(${id})"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg></button>
+  `;
+  container.appendChild(entry);
+  updateChildrenLabel();
+}
+
+function removeChild(id) {
+  const entry = document.getElementById('child-' + id);
+  if (entry) {
+    entry.style.opacity = '0'; entry.style.transition = 'all 0.2s ease';
+    setTimeout(() => { entry.remove(); updateChildrenLabel(); }, 200);
+  }
+}
+
+function updateChildrenLabel() {
+  const container = document.getElementById('childrenContainer');
+  const count = container.children.length;
+  const label = document.getElementById('childrenLabel');
+  if (count > 0) { label.style.display = 'block'; document.getElementById('childrenCount').textContent = count; }
+  else { label.style.display = 'none'; }
+}
+
+function onRefundInput() {
+  const rublesInput = document.getElementById('refundRubles');
+  const bonusInput = document.getElementById('refundBonus');
+  let enabled = false;
+  if (rublesInput && rublesInput.value.trim()) enabled = true;
+  if (bonusInput && bonusInput.value.trim()) enabled = true;
+  document.getElementById('checkRefundBtn').disabled = !enabled;
+  const section = document.getElementById('refundSection');
+  section.classList.remove('correct', 'incorrect');
+  document.getElementById('refundMessage').classList.remove('show');
+}
+
+function parseVal(str) {
+  const cleaned = str.replace(/[^\d.,]/g, '').replace(',', '.');
+  return parseFloat(cleaned);
+}
+
+function checkRefund() {
+  if (!currentSituation) return;
+  attemptCount++;
+
+  const rublesInput = document.getElementById('refundRubles');
+  const bonusInput = document.getElementById('refundBonus');
+  let correct = true;
+
+  const expected = currentSituation.correctRefund;
+
+  if (rublesInput) {
+    const rublesVal = parseVal(rublesInput.value);
+    if (expected.rubles !== undefined) {
+      if (Math.abs(rublesVal - expected.rubles) >= 0.01) correct = false;
+    }
+  }
+  if (bonusInput) {
+    const bonusVal = parseVal(bonusInput.value);
+    if (expected.bonus !== undefined) {
+      if (Math.abs(bonusVal - expected.bonus) >= 0.01) correct = false;
+    }
+  }
+
+  const section = document.getElementById('refundSection');
+  const msg = document.getElementById('refundMessage');
+  const msgText = document.getElementById('refundMsgText');
+  const msgIcon = document.getElementById('refundMsgIcon');
+  const counter = document.getElementById('attemptsCounter');
+
+  if (correct) {
+    refundCorrect = true;
+    completedSituations.add(currentSituation.id);
+    section.classList.remove('incorrect');
+    section.classList.add('correct');
+    msg.className = 'refund-message show success';
+    msgIcon.innerHTML = '<path fill="#4a8a3f" d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-2 15l-5-5 1.41-1.41L10 14.17l7.59-7.59L19 8l-9 9z"/>';
+    
+    let resultText = 'Верно! ';
+    if (expected.rubles !== undefined) resultText += 'Рублями: ' + formatPrice(expected.rubles) + '. ';
+    if (expected.bonus !== undefined) resultText += 'Бонусами: ' + expected.bonus + ' бонусов.';
+    msgText.textContent = resultText;
+    counter.textContent = '';
+    document.getElementById('checkRefundBtn').disabled = true;
+    document.getElementById('checkRefundBtn').textContent = '✓ Верно';
+    document.getElementById('saveBtn').disabled = false;
+    showToast('Сумма возврата рассчитана верно!', 'success');
+  } else {
+    section.classList.remove('correct');
+    section.classList.add('incorrect');
+    msg.className = 'refund-message show error';
+    msgIcon.innerHTML = '<path fill="#a85b2a" d="M12 2C6.47 2 2 6.47 2 12s4.47 10 10 10 10-4.47 10-10S17.53 2 12 2zm5 13.59L15.59 17 12 13.41 8.41 17 7 15.59 10.59 12 7 8.41 8.41 7 12 10.59 15.59 7 17 8.41 13.41 12 17 15.59z"/>';
+    msgText.textContent = 'Неверно. Попробуйте ещё раз.';
+    counter.textContent = 'Попытка ' + attemptCount;
+    showToast('Неверная сумма. Попробуйте ещё раз!', 'error');
+  }
+}
+
+function onSave() {
+  if (!refundCorrect) { showToast('Сначала укажите верную сумму возврата', 'error'); return; }
+  const btn = document.getElementById('saveBtn');
+  btn.disabled = true; btn.textContent = 'Сохранение...';
+  setTimeout(() => {
+    btn.disabled = false; btn.textContent = 'Сохранить';
+    showToast('Бронирование сохранено!', 'success');
+    setTimeout(goBack, 1000);
+  }, 1200);
+}
+
+renderSelectionPage();
+</script>
+
+</body>
+</html>
+
