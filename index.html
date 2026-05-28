@@ -12,15 +12,12 @@
 * { margin: 0; padding: 0; box-sizing: border-box; }
 body {
   font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
-  background: #f5f0e1;
+  background: #faf8f0;
   color: #2d3a27;
   min-height: 100vh;
   display: flex;
   justify-content: center;
   padding: 20px;
-  background-image: 
-    radial-gradient(circle at 20% 50%, rgba(45,90,39,0.03) 0%, transparent 50%),
-    radial-gradient(circle at 80% 50%, rgba(45,90,39,0.03) 0%, transparent 50%);
 }
 
 .selection-page { max-width: 1100px; width: 100%; }
@@ -29,16 +26,16 @@ body {
 .selection-header p { font-size: 15px; color: #6b7d5a; }
 .situations-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 20px; }
 .situation-card {
-  background: #faf6ea; border: 1px solid #c8d4a8; border-radius: 4px; padding: 24px;
+  background: #ffffff; border: 1px solid #d4deb8; border-radius: 4px; padding: 24px;
   cursor: pointer; transition: all 0.25s ease; position: relative; overflow: hidden;
 }
 .situation-card::before {
   content: ''; position: absolute; top: 0; left: 0; right: 0; height: 3px;
   background: linear-gradient(90deg, #2d5a27, #4a8a3f, #2d5a27); opacity: 0; transition: opacity 0.25s ease;
 }
-.situation-card:hover { border-color: #4a8a3f; box-shadow: 0 4px 16px rgba(45,58,39,0.1); transform: translateY(-2px); }
+.situation-card:hover { border-color: #4a8a3f; box-shadow: 0 4px 16px rgba(45,58,39,0.08); transform: translateY(-2px); }
 .situation-card:hover::before { opacity: 1; }
-.situation-card.completed { border-color: #4a8a3f; background: #e8f0d8; }
+.situation-card.completed { border-color: #4a8a3f; background: #f0f7ec; }
 .situation-card.completed::before { opacity: 1; background: #4a8a3f; }
 .situation-number { font-size: 11px; font-weight: 700; color: #4a8a3f; text-transform: uppercase; letter-spacing: 0.08em; margin-bottom: 10px; }
 .situation-title { font-size: 16px; font-weight: 600; color: #2d5a27; margin-bottom: 10px; }
@@ -51,7 +48,7 @@ body {
 .situation-meta-item .value.old { text-decoration: line-through; color: #8a8a6a; }
 .situation-tags { display: flex; flex-wrap: wrap; gap: 6px; margin-top: 14px; }
 .situation-tag {
-  font-size: 10px; font-weight: 600; padding: 3px 8px; background: #f0ebd8;
+  font-size: 10px; font-weight: 600; padding: 3px 8px; background: #f5f2ea;
   color: #4a8a3f; border-radius: 2px; border: 1px solid #d4deb8;
 }
 .situation-tag.promo { color: #a85b2a; background: #f5ebe0; border-color: #d4a888; }
@@ -69,9 +66,9 @@ body {
 .selection-page.hidden { display: none; }
 
 .container {
-  background: #faf6ea; border-radius: 4px;
-  box-shadow: 0 2px 8px rgba(45,58,39,0.08), 0 8px 32px rgba(45,58,39,0.06);
-  overflow: hidden; border: 1px solid #c8d4a8; animation: slideUp 0.5s ease-out; position: relative;
+  background: #ffffff; border-radius: 4px;
+  box-shadow: 0 2px 8px rgba(45,58,39,0.06), 0 8px 32px rgba(45,58,39,0.04);
+  overflow: hidden; border: 1px solid #d4deb8; animation: slideUp 0.5s ease-out; position: relative;
 }
 .container::before {
   content: ''; position: absolute; top: 0; left: 0; right: 0; height: 4px;
@@ -79,8 +76,8 @@ body {
 }
 @keyframes slideUp { from { opacity: 0; transform: translateY(20px); } to { opacity: 1; transform: translateY(0); } }
 
-.header { padding: 0; position: relative; background: #f0ebd8; border-bottom: 2px solid #c8d4a8; }
-.header-top { height: 40px; background: #f5f0e1; display: flex; align-items: center; justify-content: center; border-bottom: 1px solid #d4deb8; }
+.header { padding: 0; position: relative; background: #f5f2ea; border-bottom: 2px solid #d4deb8; }
+.header-top { height: 40px; background: #faf8f0; display: flex; align-items: center; justify-content: center; border-bottom: 1px solid #d4deb8; }
 .header-content { padding: 16px 32px; display: flex; align-items: center; gap: 16px; }
 .back-btn {
   width: 36px; height: 36px; background: #2d5a27; border-radius: 2px;
@@ -88,12 +85,12 @@ body {
   border: 1px solid #1a3d15; transition: all 0.2s ease; flex-shrink: 0;
 }
 .back-btn:hover { background: #1a3d15; }
-.back-btn svg { width: 18px; height: 18px; fill: #faf6ea; }
+.back-btn svg { width: 18px; height: 18px; fill: #ffffff; }
 .header-info { flex: 1; }
 .header h1 { font-size: 18px; font-weight: 600; color: #2d5a27; }
 .header h2 { font-size: 13px; font-weight: 500; color: #6b7d5a; margin-top: 2px; }
 .header-ornament { display: flex; align-items: center; gap: 12px; padding: 0 32px 10px; }
-.header-ornament .line { flex: 1; height: 1px; background: #c8d4a8; }
+.header-ornament .line { flex: 1; height: 1px; background: #d4deb8; }
 .header-ornament .diamond { width: 6px; height: 6px; background: #4a8a3f; transform: rotate(45deg); }
 
 .content { padding: 24px 32px; display: grid; grid-template-columns: 1fr 1fr; gap: 24px; }
@@ -109,11 +106,11 @@ body {
 .input-wrapper { position: relative; display: flex; align-items: center; }
 .input-wrapper input, .input-wrapper select, .input-wrapper textarea {
   width: 100%; padding: 9px 12px; font-size: 13px; font-family: 'Inter', sans-serif;
-  border: 1px solid #c8d4a8; border-radius: 2px; background: #fdfbf3; color: #2d3a27;
+  border: 1px solid #d4deb8; border-radius: 2px; background: #ffffff; color: #2d3a27;
   transition: all 0.2s ease; outline: none;
 }
 .input-wrapper input:focus, .input-wrapper select:focus {
-  border-color: #4a8a3f; box-shadow: 0 0 0 2px rgba(74,138,63,0.12); background: #fff;
+  border-color: #4a8a3f; box-shadow: 0 0 0 2px rgba(74,138,63,0.12);
 }
 .input-wrapper textarea { resize: vertical; min-height: 70px; border-radius: 2px; }
 .input-wrapper .calendar-icon { position: absolute; right: 10px; pointer-events: none; color: #6b7d5a; }
@@ -121,21 +118,21 @@ body {
 
 .discount-badge {
   display: flex; align-items: center; gap: 10px; padding: 10px 14px;
-  background: #f0ebd8; border: 1px solid #c8d4a8; border-radius: 2px;
+  background: #f5f2ea; border: 1px solid #d4deb8; border-radius: 2px;
   margin-bottom: 10px; border-left: 3px solid #4a8a3f;
 }
 .discount-check {
   width: 18px; height: 18px; background: #4a8a3f; border-radius: 1px;
   display: flex; align-items: center; justify-content: center; flex-shrink: 0;
 }
-.discount-check svg { width: 11px; height: 11px; fill: #faf6ea; }
+.discount-check svg { width: 11px; height: 11px; fill: #ffffff; }
 .discount-badge-text { font-size: 12px; color: #2d5a27; font-weight: 500; line-height: 1.5; }
 .discount-badge-text .orig-price { text-decoration: line-through; color: #8a8a6a; }
 .discount-badge-text .disc-price { color: #4a8a3f; font-weight: 700; }
 
 .discount-list {
   list-style: none; padding: 0; margin: 0 0 12px 0;
-  background: #f5f0e1; border: 1px solid #d4deb8; border-radius: 2px; overflow: hidden;
+  background: #faf8f0; border: 1px solid #d4deb8; border-radius: 2px; overflow: hidden;
 }
 .discount-list li {
   padding: 8px 12px; font-size: 12px; color: #4a5a3a;
@@ -151,15 +148,15 @@ body {
 .price-row + .price-row { border-top: 1px solid #d4deb8; }
 .price-label { font-size: 12px; color: #6b7d5a; font-weight: 500; }
 .price-value { font-size: 20px; font-weight: 700; color: #2d5a27; letter-spacing: -0.02em; }
-.divider { height: 1px; background: #c8d4a8; margin: 8px 0; position: relative; }
+.divider { height: 1px; background: #d4deb8; margin: 8px 0; position: relative; }
 .divider::after {
   content: '◆'; position: absolute; left: 50%; top: 50%; transform: translate(-50%, -50%);
-  color: #c8d4a8; font-size: 7px; background: #faf6ea; padding: 0 8px;
+  color: #d4deb8; font-size: 7px; background: #ffffff; padding: 0 8px;
 }
 
 .adjustment-banner {
   margin-top: 4px; padding: 12px 14px;
-  background: #f0ebd8; border: 1px solid #c8d4a8; border-radius: 2px; border-left: 3px solid #a85b2a;
+  background: #f5f2ea; border: 1px solid #d4deb8; border-radius: 2px; border-left: 3px solid #a85b2a;
 }
 .adjustment-banner .banner-title {
   font-size: 10px; font-weight: 700; color: #a85b2a; text-transform: uppercase;
@@ -169,29 +166,25 @@ body {
 .adjustment-banner .banner-info { font-size: 13px; color: #2d5a27; line-height: 1.5; }
 .adjustment-banner .banner-info .old-val { text-decoration: line-through; color: #8a8a6a; }
 .adjustment-banner .banner-info .new-val { color: #a85b2a; font-weight: 700; font-size: 18px; }
-.adjustment-banner .banner-reason { font-size: 12px; color: #6b7d5a; margin-top: 4px; font-style: italic; }
 
-.refund-section { margin-top: 12px; padding: 14px; background: #f5f0e1; border-radius: 2px; border: 2px solid #d4deb8; transition: all 0.3s ease; }
-.refund-section.correct { border-color: #4a8a3f; background: #e8f0d8; }
-.refund-section.incorrect { border-color: #a85b2a; background: #f5ebe0; }
+.refund-section { margin-top: 12px; padding: 14px; background: #faf8f0; border-radius: 2px; border: 2px solid #d4deb8; transition: all 0.3s ease; }
+.refund-section.correct { border-color: #4a8a3f; background: #f0f7ec; }
+.refund-section.incorrect { border-color: #a85b2a; background: #fef5ee; }
 .refund-section .refund-label {
   font-size: 13px; font-weight: 600; color: #2d5a27; margin-bottom: 10px;
   display: flex; align-items: center; gap: 6px;
 }
 .refund-section .refund-label svg { width: 14px; height: 14px; fill: #4a8a3f; }
-.refund-input-row { display: flex; align-items: center; gap: 8px; }
-.refund-input-row input {
-  flex: 1; padding: 10px 12px; font-size: 16px; font-weight: 700;
-  font-family: 'Inter', sans-serif; border: 1px solid #c8d4a8; border-radius: 2px;
-  outline: none; transition: all 0.2s ease; background: #fdfbf3; color: #2d5a27;
-}
-.refund-input-row input:focus { border-color: #4a8a3f; box-shadow: 0 0 0 2px rgba(74,138,63,0.12); }
-.refund-input-row .currency { font-size: 15px; font-weight: 700; color: #6b7d5a; flex-shrink: 0; }
 .refund-fields { display: flex; flex-direction: column; gap: 10px; }
 .refund-field { display: flex; align-items: center; gap: 8px; }
 .refund-field .field-type { font-size: 11px; font-weight: 600; color: #6b7d5a; min-width: 80px; text-transform: uppercase; letter-spacing: 0.04em; }
-.refund-field input { flex: 1; padding: 9px 10px; font-size: 15px; font-weight: 700; font-family: 'Inter', sans-serif; border: 1px solid #c8d4a8; border-radius: 2px; outline: none; transition: all 0.2s ease; background: #fdfbf3; color: #2d5a27; }
+.refund-field input {
+  flex: 1; padding: 9px 10px; font-size: 15px; font-weight: 700;
+  font-family: 'Inter', sans-serif; border: 1px solid #d4deb8; border-radius: 2px;
+  outline: none; transition: all 0.2s ease; background: #ffffff; color: #2d5a27;
+}
 .refund-field input:focus { border-color: #4a8a3f; box-shadow: 0 0 0 2px rgba(74,138,63,0.12); }
+.refund-field .currency { font-size: 14px; font-weight: 700; color: #6b7d5a; flex-shrink: 0; }
 .refund-message { margin-top: 8px; font-size: 12px; font-weight: 500; display: none; align-items: center; gap: 5px; }
 .refund-message.show { display: flex; }
 .refund-message.success { color: #4a8a3f; }
@@ -205,15 +198,15 @@ body {
   letter-spacing: 0.02em; text-transform: uppercase; white-space: nowrap;
 }
 .btn:active { transform: scale(0.97); }
-.btn-primary { background: #2d5a27; color: #faf6ea; }
+.btn-primary { background: #2d5a27; color: #ffffff; }
 .btn-primary:hover { background: #1a3d15; }
 .btn-primary:disabled { background: #a8b888; cursor: not-allowed; }
-.btn-secondary { background: #e0e8c8; color: #2d5a27; border: 1px solid #c8d4a8; }
+.btn-secondary { background: #e0e8c8; color: #2d5a27; border: 1px solid #d4deb8; }
 .btn-secondary:hover { background: #d4deb8; }
 .btn-outline { background: transparent; color: #4a8a3f; border: 1px solid #4a8a3f; }
-.btn-outline:hover { background: #e8f0d8; }
+.btn-outline:hover { background: #f0f7ec; }
 .btn-sm { padding: 7px 12px; font-size: 10px; }
-.btn-check-refund { background: #a85b2a; color: #faf6ea; }
+.btn-check-refund { background: #a85b2a; color: #ffffff; }
 .btn-check-refund:hover { background: #8a4518; }
 
 .children-section { margin-top: 8px; }
@@ -221,31 +214,31 @@ body {
 @keyframes fadeIn { from { opacity: 0; transform: translateY(-6px); } to { opacity: 1; transform: translateY(0); } }
 .child-entry input, .child-entry select {
   padding: 7px 8px; font-size: 12px; font-family: 'Inter', sans-serif;
-  border: 1px solid #c8d4a8; border-radius: 2px; outline: none; transition: all 0.2s ease; background: #fdfbf3; color: #2d3a27;
+  border: 1px solid #d4deb8; border-radius: 2px; outline: none; transition: all 0.2s ease; background: #ffffff; color: #2d3a27;
 }
 .child-entry input:focus, .child-entry select:focus { border-color: #4a8a3f; box-shadow: 0 0 0 2px rgba(74,138,63,0.12); }
 .child-entry input[type="number"] { width: 60px; }
 .child-entry select { min-width: 100px; }
 .btn-remove-child {
   width: 24px; height: 24px; border-radius: 1px; border: 1px solid #d4a888;
-  background: #f5ebe0; color: #a85b2a; cursor: pointer;
+  background: #fef5ee; color: #a85b2a; cursor: pointer;
   display: flex; align-items: center; justify-content: center; transition: all 0.2s ease; flex-shrink: 0;
 }
-.btn-remove-child:hover { background: #e8d4c0; }
+.btn-remove-child:hover { background: #f5ebe0; }
 .btn-remove-child svg { width: 12px; height: 12px; }
 
 .status-section { margin-top: 4px; }
-.status-current { padding: 10px 12px; background: #f0ebd8; border: 1px solid #d4deb8; border-radius: 2px; margin-bottom: 12px; }
+.status-current { padding: 10px 12px; background: #f5f2ea; border: 1px solid #d4deb8; border-radius: 2px; margin-bottom: 12px; }
 .status-current .label { font-size: 10px; color: #6b7d5a; font-weight: 600; text-transform: uppercase; letter-spacing: 0.06em; }
 .status-current .value { font-size: 14px; font-weight: 600; color: #2d5a27; margin-top: 3px; }
 .status-current .value.undefined { color: #8a8a6a; }
 
-.footer { padding: 14px 32px; border-top: 1px solid #d4deb8; display: flex; justify-content: flex-end; gap: 8px; background: #f0ebd8; }
+.footer { padding: 14px 32px; border-top: 1px solid #d4deb8; display: flex; justify-content: flex-end; gap: 8px; background: #f5f2ea; }
 
 .toast {
   position: fixed; bottom: 24px; right: 24px; padding: 12px 20px; border-radius: 2px;
-  font-size: 13px; font-weight: 500; color: #faf6ea; transform: translateY(100px);
-  opacity: 0; transition: all 0.3s ease; z-index: 1000; box-shadow: 0 4px 16px rgba(45,58,39,0.2);
+  font-size: 13px; font-weight: 500; color: #ffffff; transform: translateY(100px);
+  opacity: 0; transition: all 0.3s ease; z-index: 1000; box-shadow: 0 4px 16px rgba(45,58,39,0.15);
 }
 .toast.show { transform: translateY(0); opacity: 1; }
 .toast.success { background: #2d5a27; }
@@ -257,7 +250,6 @@ body {
   .header-content { padding: 14px 16px; }
   .footer { padding: 12px 16px; }
   .situations-grid { grid-template-columns: 1fr; }
-  .refund-fields { gap: 8px; }
   .refund-field { flex-direction: column; align-items: stretch; }
   .refund-field .field-type { min-width: auto; }
 }
@@ -397,84 +389,44 @@ let completedSituations = new Set();
 
 const situations = [
   {
-    id: 1,
-    title: 'Базовая корректировка',
-    description: 'Корректировка стоимости с двумя типами скидок',
-    originalPrice: 13647.05,
-    discountedPrice: 10440,
-    discounts: [
-      { name: 'Эксклюзивный тариф (15%)', value: '-2 047,05' },
-      { name: 'Промокод SVOILYDI (10%)', value: '-1 160' }
-    ],
-    promoTags: ['SVOILYDI', 'Экс. тариф'],
-    newSum: 9350,
-    correctRefund: { rubles: 3287.24 },
-    reason: 'Корректировка стоимости проживания'
+    id: 1, title: 'Базовая корректировка', description: 'Корректировка стоимости с двумя типами скидок',
+    originalPrice: 13647.05, discountedPrice: 10440,
+    discounts: [{ name: 'Эксклюзивный тариф (15%)', value: '-2 047,05' }, { name: 'Промокод SVOILYDI (10%)', value: '-1 160' }],
+    promoTags: ['SVOILYDI', 'Экс. тариф'], newSum: 9350,
+    correctRefund: { rubles: 3287.24 }, reason: 'Корректировка стоимости проживания'
   },
   {
-    id: 2,
-    title: 'Отмена завтраков',
-    description: 'Убирают завтраки из бронирования',
-    originalPrice: 5600,
-    discountedPrice: 4031,
-    discounts: [
-      { name: 'Промокод RYNDYCH (20%. Max: 2000)', value: '-1 120' },
-      { name: 'Бонусами СберСпасибо', value: '-449' }
-    ],
-    promoTags: ['RYNDYCH', 'СберСпасибо'],
-    newSum: 4800,
-    correctRefund: { rubles: 576, bonus: 64 },
-    reason: 'Убрана услуга — завтраки'
+    id: 2, title: 'Отмена завтраков', description: 'Убирают завтраки из бронирования',
+    originalPrice: 5600, discountedPrice: 4031,
+    discounts: [{ name: 'Промокод RYNDYCH (20%. Max: 2000)', value: '-1 120' }, { name: 'Бонусами СберСпасибо', value: '-449' }],
+    promoTags: ['RYNDYCH', 'СберСпасибо'], newSum: 4800,
+    correctRefund: { rubles: 576, bonus: 64 }, reason: 'Убрана услуга — завтраки'
   },
   {
-    id: 3,
-    title: 'Сокращение дат',
-    description: 'Сокращение сроков проживания',
-    originalPrice: 20012,
-    discountedPrice: 15012,
-    discounts: [
-      { name: 'Промокод BARHATVANDROUKI (30%. Max: 5000)', value: '-5 000' }
-    ],
-    promoTags: ['BARHATVANDROUKI'],
-    newSum: 11371,
-    correctRefund: { rubles: 7052.30 },
-    reason: 'Сокращение дат проживания'
+    id: 3, title: 'Сокращение дат', description: 'Сокращение сроков проживания',
+    originalPrice: 20012, discountedPrice: 15012,
+    discounts: [{ name: 'Промокод BARHATVANDROUKI (30%. Max: 5000)', value: '-5 000' }],
+    promoTags: ['BARHATVANDROUKI'], newSum: 11371,
+    correctRefund: { rubles: 7052.30 }, reason: 'Сокращение дат проживания'
   },
   {
-    id: 4,
-    title: 'Перенос дат',
-    description: 'Перенос дат проживания',
-    originalPrice: 4450,
-    discountedPrice: 3560,
-    discounts: [
-      { name: 'Промокод AUT2923 (20%. Max: 2500)', value: '-890' }
-    ],
-    promoTags: ['AUT2923'],
-    newSum: 4000,
-    correctRefund: { rubles: 360 },
-    reason: 'Перенос дат проживания'
+    id: 4, title: 'Перенос дат', description: 'Перенос дат проживания',
+    originalPrice: 4450, discountedPrice: 3560,
+    discounts: [{ name: 'Промокод AUT2923 (20%. Max: 2500)', value: '-890' }],
+    promoTags: ['AUT2923'], newSum: 4000,
+    correctRefund: { rubles: 360 }, reason: 'Перенос дат проживания'
   },
   {
-    id: 5,
-    title: 'Сокращение проживания',
-    description: 'Сокращение срока + возврат бонусов',
-    originalPrice: 6630,
-    discountedPrice: 1524,
-    discounts: [
-      { name: 'Промокод GOLD2898 (20%. Max: 3000)', value: '-1 326' },
-      { name: 'Бонусами СберСпасибо', value: '-3 780' }
-    ],
-    promoTags: ['GOLD2898', 'СберСпасибо'],
-    newSum: 3315,
-    correctRefund: { rubles: 762, bonus: 1890 },
-    reason: 'Сокращение проживания'
+    id: 5, title: 'Сокращение проживания', description: 'Сокращение срока + возврат бонусов',
+    originalPrice: 6630, discountedPrice: 1524,
+    discounts: [{ name: 'Промокод GOLD2898 (20%. Max: 3000)', value: '-1 326' }, { name: 'Бонусами СберСпасибо', value: '-3 780' }],
+    promoTags: ['GOLD2898', 'СберСпасибо'], newSum: 3315,
+    correctRefund: { rubles: 762, bonus: 1890 }, reason: 'Сокращение проживания'
   }
 ];
 
 function formatPrice(value) {
-  if (value % 1 !== 0) {
-    return value.toLocaleString('ru-RU', { minimumFractionDigits: 2, maximumFractionDigits: 2 }) + ' ₽';
-  }
+  if (value % 1 !== 0) return value.toLocaleString('ru-RU', { minimumFractionDigits: 2, maximumFractionDigits: 2 }) + ' ₽';
   return value.toLocaleString('ru-RU') + ' ₽';
 }
 
@@ -538,51 +490,24 @@ function openSituation(id) {
   const hasBonus = currentSituation.correctRefund.bonus !== undefined;
   const hasRubles = currentSituation.correctRefund.rubles !== undefined;
 
-  // Render fields
   let fieldsHtml = '<div class="refund-fields">';
   if (hasRubles && hasBonus) {
     document.getElementById('refundLabel').textContent = 'Рассчитайте сумму возврата:';
     fieldsHtml += `
-      <div class="refund-field">
-        <span class="field-type">Рублями</span>
-        <input type="text" id="refundRubles" placeholder="Сумма в рублях" oninput="onRefundInput()">
-        <span class="currency">₽</span>
-      </div>
-      <div class="refund-field">
-        <span class="field-type">Бонусами</span>
-        <input type="text" id="refundBonus" placeholder="Сумма в бонусах" oninput="onRefundInput()">
-        <span class="currency">бон.</span>
-      </div>
+      <div class="refund-field"><span class="field-type">Рублями</span><input type="text" id="refundRubles" placeholder="Сумма в рублях" oninput="onRefundInput()"><span class="currency">₽</span></div>
+      <div class="refund-field"><span class="field-type">Бонусами</span><input type="text" id="refundBonus" placeholder="Сумма в бонусах" oninput="onRefundInput()"><span class="currency">бон.</span></div>
     `;
   } else if (hasRubles) {
     document.getElementById('refundLabel').textContent = 'Рассчитайте сумму возврата в рублях:';
-    fieldsHtml += `
-      <div class="refund-field">
-        <span class="field-type">Рублями</span>
-        <input type="text" id="refundRubles" placeholder="Сумма в рублях" oninput="onRefundInput()">
-        <span class="currency">₽</span>
-      </div>
-    `;
-  } else if (hasBonus) {
-    document.getElementById('refundLabel').textContent = 'Рассчитайте сумму возврата в бонусах:';
-    fieldsHtml += `
-      <div class="refund-field">
-        <span class="field-type">Бонусами</span>
-        <input type="text" id="refundBonus" placeholder="Сумма в бонусах" oninput="onRefundInput()">
-        <span class="currency">бон.</span>
-      </div>
-    `;
+    fieldsHtml += `<div class="refund-field"><span class="field-type">Рублями</span><input type="text" id="refundRubles" placeholder="Сумма в рублях" oninput="onRefundInput()"><span class="currency">₽</span></div>`;
   }
   fieldsHtml += '</div>';
   document.getElementById('refundFields').innerHTML = fieldsHtml;
   document.getElementById('checkRefundBtn').disabled = true;
 
-  // Render discount badge
   document.getElementById('discountBadge').innerHTML = `
     <div class="discount-check"><svg viewBox="0 0 24 24"><path d="M9 16.17L4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41L9 16.17z"/></svg></div>
-    <div class="discount-badge-text">
-      К заказу была применена скидка. Изначальная цена: <span class="orig-price">${formatPrice(currentSituation.originalPrice)}</span>, со скидкой: <span class="disc-price">${formatPrice(currentSituation.discountedPrice)}</span>
-    </div>
+    <div class="discount-badge-text">К заказу была применена скидка. Изначальная цена: <span class="orig-price">${formatPrice(currentSituation.originalPrice)}</span>, со скидкой: <span class="disc-price">${formatPrice(currentSituation.discountedPrice)}</span></div>
   `;
 
   document.getElementById('discountList').innerHTML = currentSituation.discounts.map(d => `
@@ -596,13 +521,8 @@ function openSituation(id) {
   `;
 
   document.getElementById('adjustmentBanner').innerHTML = `
-    <div class="banner-title">
-      <svg viewBox="0 0 24 24"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm1 15h-2v-2h2v2zm0-4h-2V7h2v6z"/></svg>
-      ${currentSituation.reason}
-    </div>
-    <div class="banner-info">
-      Новая сумма: <span class="old-val">${formatPrice(currentSituation.discountedPrice)}</span> → <span class="new-val">${formatPrice(currentSituation.newSum)}</span>
-    </div>
+    <div class="banner-title"><svg viewBox="0 0 24 24"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm1 15h-2v-2h2v2zm0-4h-2V7h2v6z"/></svg>${currentSituation.reason}</div>
+    <div class="banner-info">Новая сумма: <span class="old-val">${formatPrice(currentSituation.discountedPrice)}</span> → <span class="new-val">${formatPrice(currentSituation.newSum)}</span></div>
   `;
 }
 
@@ -631,10 +551,7 @@ function addChild() {
 
 function removeChild(id) {
   const entry = document.getElementById('child-' + id);
-  if (entry) {
-    entry.style.opacity = '0'; entry.style.transition = 'all 0.2s ease';
-    setTimeout(() => { entry.remove(); updateChildrenLabel(); }, 200);
-  }
+  if (entry) { entry.style.opacity = '0'; entry.style.transition = 'all 0.2s ease'; setTimeout(() => { entry.remove(); updateChildrenLabel(); }, 200); }
 }
 
 function updateChildrenLabel() {
@@ -669,20 +586,15 @@ function checkRefund() {
   const rublesInput = document.getElementById('refundRubles');
   const bonusInput = document.getElementById('refundBonus');
   let correct = true;
-
   const expected = currentSituation.correctRefund;
 
   if (rublesInput) {
     const rublesVal = parseVal(rublesInput.value);
-    if (expected.rubles !== undefined) {
-      if (Math.abs(rublesVal - expected.rubles) >= 0.01) correct = false;
-    }
+    if (expected.rubles !== undefined && Math.abs(rublesVal - expected.rubles) >= 0.01) correct = false;
   }
   if (bonusInput) {
     const bonusVal = parseVal(bonusInput.value);
-    if (expected.bonus !== undefined) {
-      if (Math.abs(bonusVal - expected.bonus) >= 0.01) correct = false;
-    }
+    if (expected.bonus !== undefined && Math.abs(bonusVal - expected.bonus) >= 0.01) correct = false;
   }
 
   const section = document.getElementById('refundSection');
@@ -694,11 +606,9 @@ function checkRefund() {
   if (correct) {
     refundCorrect = true;
     completedSituations.add(currentSituation.id);
-    section.classList.remove('incorrect');
-    section.classList.add('correct');
+    section.classList.remove('incorrect'); section.classList.add('correct');
     msg.className = 'refund-message show success';
     msgIcon.innerHTML = '<path fill="#4a8a3f" d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-2 15l-5-5 1.41-1.41L10 14.17l7.59-7.59L19 8l-9 9z"/>';
-    
     let resultText = 'Верно! ';
     if (expected.rubles !== undefined) resultText += 'Рублями: ' + formatPrice(expected.rubles) + '. ';
     if (expected.bonus !== undefined) resultText += 'Бонусами: ' + expected.bonus + ' бонусов.';
@@ -709,8 +619,7 @@ function checkRefund() {
     document.getElementById('saveBtn').disabled = false;
     showToast('Сумма возврата рассчитана верно!', 'success');
   } else {
-    section.classList.remove('correct');
-    section.classList.add('incorrect');
+    section.classList.remove('correct'); section.classList.add('incorrect');
     msg.className = 'refund-message show error';
     msgIcon.innerHTML = '<path fill="#a85b2a" d="M12 2C6.47 2 2 6.47 2 12s4.47 10 10 10 10-4.47 10-10S17.53 2 12 2zm5 13.59L15.59 17 12 13.41 8.41 17 7 15.59 10.59 12 7 8.41 8.41 7 12 10.59 15.59 7 17 8.41 13.41 12 17 15.59z"/>';
     msgText.textContent = 'Неверно. Попробуйте ещё раз.';
@@ -723,11 +632,7 @@ function onSave() {
   if (!refundCorrect) { showToast('Сначала укажите верную сумму возврата', 'error'); return; }
   const btn = document.getElementById('saveBtn');
   btn.disabled = true; btn.textContent = 'Сохранение...';
-  setTimeout(() => {
-    btn.disabled = false; btn.textContent = 'Сохранить';
-    showToast('Бронирование сохранено!', 'success');
-    setTimeout(goBack, 1000);
-  }, 1200);
+  setTimeout(() => { btn.disabled = false; btn.textContent = 'Сохранить'; showToast('Бронирование сохранено!', 'success'); setTimeout(goBack, 1000); }, 1200);
 }
 
 renderSelectionPage();
